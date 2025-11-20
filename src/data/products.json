@@ -31,7 +31,7 @@
   {
     "id": "2",
     "name": "Crimson Bridal Set",
-    "price": 180000,
+    "price": 10000,
     "category": "lehenga",
     "image": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e28?q=80&w=2888&auto=format&fit=crop",
     "description": "Traditional red bridal lehenga with intricate thread work.",
@@ -41,8 +41,7 @@
       "L"
     ],
     "images": [
-      "https://images.unsplash.com/photo-1583391733956-3750e0ff4e28?q=80&w=2888&auto=format&fit=crop",
-      "/uploads/WhatsApp Image 2025-11-19 at 21.14.47_21c86cd0-1763575497274-290543300.jpg"
+      "/uploads/fxtgsoi8vw0bjn7vcgvw[1]-1763641204232-64821474.jpg"
     ],
     "videos": [],
     "colors": [],
