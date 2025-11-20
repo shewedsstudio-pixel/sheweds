@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FEF8E6;
+  /* Manyavar Cream */
+  --foreground: #3C1E10;
+  /* Deep Brown */
+  --primary: #E86A33;
+  /* Rust Orange */
+  --secondary: #5D2E1A;
+  /* Lighter Brown */
+  --accent: #F4EBD9;
+  /* Beige Accent */
+  --muted: #D6C0B3;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-inter), sans-serif;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-playfair-display), serif;
+  color: #3C1E10;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}

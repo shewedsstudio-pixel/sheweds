@@ -1,0 +1,13 @@
+{
+  "slides": [
+    {
+      "id": "hero-1",
+      "type": "image",
+      "url": "/uploads/hero-bridal.png",
+      "title": "Exquisite Bridal Collection",
+      "subtitle": "Discover Timeless Elegance for Your Special Day",
+      "ctaText": "SHOP NOW",
+      "ctaLink": "/shop"
+    }
+  ]
+}

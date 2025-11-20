@@ -1,0 +1,114 @@
+{
+  "home": {
+    "id": "home",
+    "slug": "home",
+    "name": "Home Page",
+    "sections": [
+      {
+        "id": "hero-1",
+        "type": "Hero",
+        "content": {
+          "slides": [
+            {
+              "id": "1",
+              "type": "image",
+              "url": "https://wealthy-green-bzpg6beblo.edgeone.app/Gemini_Generated_Image_2c990f2c990f2c99.png",
+              "title": "Mohey Rang Do\nBurnt Caramel",
+              "subtitle": "Because beige is never just beige",
+              "ctaText": "DISCOVER 250+ SHADES",
+              "ctaLink": "/shop"
+            }
+          ]
+        },
+        "settings": {
+          "paddingTop": "none",
+          "paddingBottom": "none"
+        }
+      },
+      {
+        "id": "journey-1",
+        "type": "BridalJourney",
+        "content": {
+          "title": "CURATE A LOOK FOR THE",
+          "subtitle": "BRIDAL JOURNEY",
+          "cardHeight": "small",
+          "items": [
+            {
+              "title": "Bridal lehenga",
+              "image": "/uploads/upscalemedia-transformed-1763615891292-891064673.png",
+              "link": "/shop?category=wedding"
+            },
+            {
+              "title": "RECEPTION",
+              "image": "/uploads/lyfbuyilyxryc4galrpl-1763629409667-675284321.png",
+              "link": "/shop?category=reception"
+            },
+            {
+              "title": "ENGAGEMENT",
+              "image": "/uploads/grok-image-cc79a996-d719-4aa6-a36c-8bd019211172-1763629423254-785979053.png",
+              "link": "/shop?category=engagement"
+            },
+            {
+              "title": "MEHENDI",
+              "image": "/uploads/Gemini_Generated_Image_4nhfx24nhfx24nhf-1763629474789-371530128.png",
+              "link": "/shop?category=mehendi"
+            }
+          ],
+          "subtitleStyle": {
+            "size": "text-base"
+          }
+        },
+        "settings": {}
+      },
+      {
+        "id": "featured-1",
+        "type": "FeaturedCollection",
+        "content": {
+          "title": "Featured Collection",
+          "description": "Handpicked favorites for your special day"
+        },
+        "settings": {}
+      },
+      {
+        "id": "about-1",
+        "type": "AboutSection",
+        "content": {
+          "title": "Weaving Dreams into Reality",
+          "description1": "At SHEWEDS, we believe that every stitch tells a story. Born from a passion for Indian heritage and modern aesthetics, our brand represents the pinnacle of bridal luxury.",
+          "description2": "Our collections are handcrafted by master artisans who have inherited their skills through generations. From the intricate Zardosi of Lucknow to the vibrant Bandhani of Gujarat, we bring you the finest traditions of India.",
+          "image": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e28?q=80&w=2888&auto=format&fit=crop",
+          "buttonText": "Read Our Story",
+          "buttonLink": "/about"
+        },
+        "settings": {}
+      },
+      {
+        "id": "testimonials-1",
+        "type": "TestimonialSlider",
+        "content": {
+          "testimonials": [
+            {
+              "id": 1,
+              "text": "The lehenga I bought for my wedding was nothing short of a masterpiece. The intricate embroidery and the fit were perfect. Felt like a queen!",
+              "author": "Priya Sharma",
+              "location": "Mumbai"
+            },
+            {
+              "id": 2,
+              "text": "SHEWEDS brings the Sabyasachi vibe at a much more accessible touchpoint without compromising on luxury. Truly exceptional service.",
+              "author": "Ananya Singh",
+              "location": "Delhi"
+            },
+            {
+              "id": 3,
+              "text": "From the packaging to the fabric quality, everything screams premium. I'm in love with my saree collection from here.",
+              "author": "Meera Patel",
+              "location": "London"
+            }
+          ]
+        },
+        "settings": {}
+      }
+    ]
+  }
+}
