@@ -161,6 +161,7 @@ export interface Section {
     type: string;
     content: Record<string, any>;
     settings: Record<string, any>;
+    hidden?: boolean;
 }
 
 export interface PageConfig {

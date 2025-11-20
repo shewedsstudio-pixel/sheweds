@@ -224,6 +224,27 @@ export default function DesignEditor() {
         }
     };
 
+    const toggleSectionVisibility = (id: string) => {
+        if (!currentPage) return;
+        const updatedSections = currentPage.sections.map(s => {
+            if (s.id === id) {
+                return { ...s, hidden: !s.hidden };
+            }
+            return s;
+        });
+        const updatedPage = { ...currentPage, sections: updatedSections };
+        setCurrentPage(updatedPage);
+
+        // Send live update to iframe
+        const iframe = document.querySelector('iframe');
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({
+                type: 'UPDATE_PAGE_CONFIG',
+                payload: updatedPage
+            }, '*');
+        }
+    };
+
     if (loading && !currentPage) return <div className="flex h-screen items-center justify-center">Loading Editor...</div>;
 
     return (
@@ -293,6 +314,7 @@ export default function DesignEditor() {
                                             isSelected={selectedSectionId === section.id}
                                             onClick={() => setSelectedSectionId(section.id)}
                                             onRemove={() => removeSection(section.id)}
+                                            onToggleVisibility={() => toggleSectionVisibility(section.id)}
                                         />
                                     ))}
                                 </div>
@@ -426,6 +448,114 @@ export default function DesignEditor() {
                                                     </select>
                                                     <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
                                                         <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {field.type === 'image' && (
+                                                <div className="space-y-2">
+                                                    <div className="flex gap-2">
+                                                        <input
+                                                            value={section.content[field.name] || ''}
+                                                            onChange={(e) => updateSection(section.id, field.name, e.target.value)}
+                                                            className="flex-1 border border-gray-300 p-2 rounded-md text-sm focus:ring-1 focus:ring-black focus:border-black outline-none transition-all"
+                                                            placeholder="https://..."
+                                                        />
+                                                        <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-md transition-colors flex items-center justify-center border border-gray-200">
+                                                            <ImageIcon size={18} />
+                                                            <input
+                                                                type="file"
+                                                                className="hidden"
+                                                                accept="image/*"
+                                                                onChange={async (e) => {
+                                                                    const file = e.target.files?.[0];
+                                                                    if (!file) return;
+
+                                                                    const formData = new FormData();
+                                                                    formData.append('file', file);
+
+                                                                    try {
+                                                                        const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                                                                        const data = await res.json();
+                                                                        if (data.success) {
+                                                                            updateSection(section.id, field.name, data.path);
+                                                                        } else {
+                                                                            alert('Upload failed');
+                                                                        }
+                                                                    } catch (err) {
+                                                                        console.error(err);
+                                                                        alert('Upload error');
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </label>
+                                                    </div>
+                                                    {section.content[field.name] && (
+                                                        <div className="relative w-full h-32 bg-gray-100 rounded-md overflow-hidden border border-gray-200">
+                                                            <img src={section.content[field.name]} alt="Preview" className="w-full h-full object-cover" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {field.type === 'typography' && (
+                                                <div className="p-3 bg-gray-50 border border-gray-200 rounded-md space-y-3">
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <div>
+                                                            <label className="block text-[10px] font-bold text-gray-500 mb-1">Size</label>
+                                                            <select
+                                                                value={section.content[field.name]?.size || 'text-base'}
+                                                                onChange={(e) => updateSection(section.id, field.name, { ...section.content[field.name], size: e.target.value })}
+                                                                className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
+                                                            >
+                                                                <option value="text-xs">XS</option>
+                                                                <option value="text-sm">Small</option>
+                                                                <option value="text-base">Base</option>
+                                                                <option value="text-lg">Large</option>
+                                                                <option value="text-xl">XL</option>
+                                                                <option value="text-2xl">2XL</option>
+                                                                <option value="text-3xl">3XL</option>
+                                                                <option value="text-4xl">4XL</option>
+                                                                <option value="text-5xl">5XL</option>
+                                                            </select>
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-[10px] font-bold text-gray-500 mb-1">Weight</label>
+                                                            <select
+                                                                value={section.content[field.name]?.weight || 'font-normal'}
+                                                                onChange={(e) => updateSection(section.id, field.name, { ...section.content[field.name], weight: e.target.value })}
+                                                                className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
+                                                            >
+                                                                <option value="font-light">Light</option>
+                                                                <option value="font-normal">Normal</option>
+                                                                <option value="font-medium">Medium</option>
+                                                                <option value="font-semibold">Semibold</option>
+                                                                <option value="font-bold">Bold</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <div>
+                                                            <label className="block text-[10px] font-bold text-gray-500 mb-1">Align</label>
+                                                            <select
+                                                                value={section.content[field.name]?.align || 'text-left'}
+                                                                onChange={(e) => updateSection(section.id, field.name, { ...section.content[field.name], align: e.target.value })}
+                                                                className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
+                                                            >
+                                                                <option value="text-left">Left</option>
+                                                                <option value="text-center">Center</option>
+                                                                <option value="text-right">Right</option>
+                                                            </select>
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-[10px] font-bold text-gray-500 mb-1">Color</label>
+                                                            <input
+                                                                type="color"
+                                                                value={section.content[field.name]?.color || '#000000'}
+                                                                onChange={(e) => updateSection(section.id, field.name, { ...section.content[field.name], color: e.target.value })}
+                                                                className="w-full h-8 p-0 border-0 rounded cursor-pointer"
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             )}
@@ -623,113 +753,6 @@ export default function DesignEditor() {
                                                     </Button>
                                                 </div>
                                             )}
-                                            {field.type === 'image' && (
-                                                <div className="space-y-2">
-                                                    <div className="flex gap-2">
-                                                        <input
-                                                            value={section.content[field.name] || ''}
-                                                            onChange={(e) => updateSection(section.id, field.name, e.target.value)}
-                                                            className="flex-1 border border-gray-300 p-2 rounded-md text-sm focus:ring-1 focus:ring-black focus:border-black outline-none transition-all"
-                                                            placeholder="https://..."
-                                                        />
-                                                        <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-md transition-colors flex items-center justify-center border border-gray-200">
-                                                            <ImageIcon size={18} />
-                                                            <input
-                                                                type="file"
-                                                                className="hidden"
-                                                                accept="image/*"
-                                                                onChange={async (e) => {
-                                                                    const file = e.target.files?.[0];
-                                                                    if (!file) return;
-
-                                                                    const formData = new FormData();
-                                                                    formData.append('file', file);
-
-                                                                    try {
-                                                                        const res = await fetch('/api/upload', { method: 'POST', body: formData });
-                                                                        const data = await res.json();
-                                                                        if (data.success) {
-                                                                            updateSection(section.id, field.name, data.path);
-                                                                        } else {
-                                                                            alert('Upload failed');
-                                                                        }
-                                                                    } catch (err) {
-                                                                        console.error(err);
-                                                                        alert('Upload error');
-                                                                    }
-                                                                }}
-                                                            />
-                                                        </label>
-                                                    </div>
-                                                    {section.content[field.name] && (
-                                                        <div className="relative w-full h-32 bg-gray-100 rounded-md overflow-hidden border border-gray-200">
-                                                            <img src={section.content[field.name]} alt="Preview" className="w-full h-full object-cover" />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
-
-                                            {field.type === 'typography' && (
-                                                <div className="p-3 bg-gray-50 border border-gray-200 rounded-md space-y-3">
-                                                    <div className="grid grid-cols-2 gap-2">
-                                                        <div>
-                                                            <label className="block text-[10px] font-bold text-gray-500 mb-1">Size</label>
-                                                            <select
-                                                                value={section.content[field.name]?.size || 'text-base'}
-                                                                onChange={(e) => updateSection(section.id, field.name, { ...section.content[field.name], size: e.target.value })}
-                                                                className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
-                                                            >
-                                                                <option value="text-xs">XS</option>
-                                                                <option value="text-sm">Small</option>
-                                                                <option value="text-base">Base</option>
-                                                                <option value="text-lg">Large</option>
-                                                                <option value="text-xl">XL</option>
-                                                                <option value="text-2xl">2XL</option>
-                                                                <option value="text-3xl">3XL</option>
-                                                                <option value="text-4xl">4XL</option>
-                                                                <option value="text-5xl">5XL</option>
-                                                            </select>
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-[10px] font-bold text-gray-500 mb-1">Weight</label>
-                                                            <select
-                                                                value={section.content[field.name]?.weight || 'font-normal'}
-                                                                onChange={(e) => updateSection(section.id, field.name, { ...section.content[field.name], weight: e.target.value })}
-                                                                className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
-                                                            >
-                                                                <option value="font-light">Light</option>
-                                                                <option value="font-normal">Normal</option>
-                                                                <option value="font-medium">Medium</option>
-                                                                <option value="font-semibold">Semibold</option>
-                                                                <option value="font-bold">Bold</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div className="grid grid-cols-2 gap-2">
-                                                        <div>
-                                                            <label className="block text-[10px] font-bold text-gray-500 mb-1">Align</label>
-                                                            <select
-                                                                value={section.content[field.name]?.align || 'text-left'}
-                                                                onChange={(e) => updateSection(section.id, field.name, { ...section.content[field.name], align: e.target.value })}
-                                                                className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
-                                                            >
-                                                                <option value="text-left">Left</option>
-                                                                <option value="text-center">Center</option>
-                                                                <option value="text-right">Right</option>
-                                                            </select>
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-[10px] font-bold text-gray-500 mb-1">Color</label>
-                                                            <input
-                                                                type="color"
-                                                                value={section.content[field.name]?.color || '#000000'}
-                                                                onChange={(e) => updateSection(section.id, field.name, { ...section.content[field.name], color: e.target.value })}
-                                                                className="w-full h-8 p-0 border-0 rounded cursor-pointer"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
                                         </div>
                                     ))}
 
@@ -799,26 +822,42 @@ function SortableItem(props: any) {
             `}
             onClick={props.onClick}
         >
-            <div {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-200">
-                <GripVertical size={14} />
+            <div className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600" {...attributes} {...listeners}>
+                <GripVertical size={16} />
             </div>
-
-            <div className="flex items-center gap-2 flex-1 min-w-0">
-                <div className="text-gray-500">
-                    <Icon size={16} />
-                </div>
-                <span className="text-sm font-medium text-gray-700 truncate">
-                    {schema?.name || props.section.type}
-                </span>
+            <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500">
+                <Icon size={16} />
             </div>
+            <span className={`text-sm font-medium flex-1 ${props.section.hidden ? 'text-gray-400 italic line-through' : 'text-gray-700'}`}>
+                {schema?.name || props.section.type}
+            </span>
 
-            <button
-                onClick={(e) => { e.stopPropagation(); props.onRemove(); }}
-                className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-50 transition-all"
-                title="Remove Section"
-            >
-                <Trash2 size={14} />
-            </button>
+            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        props.onToggleVisibility();
+                    }}
+                    className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded"
+                    title={props.section.hidden ? "Show Section" : "Hide Section"}
+                >
+                    {props.section.hidden ? (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" /></svg>
+                    ) : (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                    )}
+                </button>
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        props.onRemove();
+                    }}
+                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded"
+                    title="Remove Section"
+                >
+                    <Trash2 size={14} />
+                </button>
+            </div>
         </div>
     );
 }
