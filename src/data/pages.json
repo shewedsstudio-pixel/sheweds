@@ -12,7 +12,7 @@
             {
               "id": "1",
               "type": "image",
-              "url": "https://wealthy-green-bzpg6beblo.edgeone.app/Gemini_Generated_Image_2c990f2c990f2c99.png",
+              "url": "/uploads/upscalemedia-transformed-1763657412467-336771175.png",
               "title": "Mohey Rang Do\nBurnt Caramel",
               "subtitle": "Because beige is never just beige",
               "ctaText": "DISCOVER 250+ SHADES",
@@ -65,9 +65,15 @@
         "type": "FeaturedCollection",
         "content": {
           "title": "Featured Collection",
-          "description": "Handpicked favorites for your special day"
+          "description": "Handpicked favorites for your special day",
+          "layout": "carousel",
+          "productCardStyle": "standard",
+          "showPrice": ""
         },
-        "settings": {}
+        "settings": {
+          "paddingTop": "none",
+          "paddingBottom": "none"
+        }
       },
       {
         "id": "about-1",

@@ -55,7 +55,7 @@
     "id": "3",
     "name": "Emerald Velvet Gown",
     "price": 85000,
-    "category": "Gown",
+    "category": "lehenga",
     "image": "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=2848&auto=format&fit=crop",
     "description": "Deep emerald velvet gown perfect for reception nights.",
     "sizes": [
@@ -65,7 +65,7 @@
       "XL"
     ],
     "images": [
-      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=2848&auto=format&fit=crop"
+      "/uploads/WhatsApp Image 2025-11-06 at 22.17.44_5bb477fc (1)-1763655834020-939109088.jpg"
     ],
     "videos": [],
     "colors": [],

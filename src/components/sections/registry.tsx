@@ -62,7 +62,11 @@ export const SECTION_SCHEMAS: Record<string, any> = {
             { name: 'title', type: 'text', label: 'Section Title' },
             { name: 'titleStyle', type: 'typography', label: 'Title Style' },
             { name: 'description', type: 'textarea', label: 'Description' },
-            // In a real app, we might select a collection ID here
+            { name: 'layout', type: 'select', options: ['grid', 'carousel'], label: 'Layout Mode' },
+            { name: 'itemCount', type: 'select', options: ['4', '8', '12'], label: 'Number of Products' },
+            { name: 'productCardStyle', type: 'select', options: ['standard', 'minimal'], label: 'Card Style' },
+            { name: 'showPrice', type: 'select', options: ['true', 'false'], label: 'Show Price' },
+            { name: 'showAddToCart', type: 'select', options: ['true', 'false'], label: 'Show Add to Cart' },
         ]
     },
     'RichText': {

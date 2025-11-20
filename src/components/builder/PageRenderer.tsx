@@ -49,7 +49,10 @@ export const PageRenderer = ({ sections: initialSections, products = [], heroSli
                     ...section.content,
                     // Inject global data if the component needs it
                     products: section.type === 'FeaturedCollection' ? products : undefined,
-                    slides: section.type === 'Hero' ? heroSlides : undefined,
+                    // Prioritize slides from the section content (admin editor), fallback to server prop
+                    slides: section.type === 'Hero'
+                        ? (section.content.slides && section.content.slides.length > 0 ? section.content.slides : heroSlides)
+                        : undefined,
                 };
 
                 // Wrapper for animations and settings

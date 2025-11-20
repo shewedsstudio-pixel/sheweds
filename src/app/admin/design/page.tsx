@@ -745,115 +745,119 @@ export default function DesignEditor() {
                                                         className="w-full text-xs border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-600"
                                                         onClick={() => {
                                                             const newArray = [...(section.content[field.name] || [])];
-                                                            newArray.push({});
+                                                            newArray.push({ id: Date.now().toString() });
                                                             updateSection(section.id, field.name, newArray);
                                                         }}
                                                     >
-                                                        + Add Slide
+                                                        <Plus size={14} className="mr-1" /> Add Item
                                                     </Button>
                                                 </div>
                                             )}
                                         </div>
                                     ))}
 
-                                    <div className="pt-6 border-t border-gray-200 mt-8">
-                                        <h4 className="font-bold text-xs mb-4 text-gray-900 uppercase">Layout Settings</h4>
-                                        <div className="mb-4">
-                                            <label className="block text-xs font-semibold text-gray-600 mb-1">Top Padding</label>
-                                            <select
-                                                value={section.settings?.paddingTop || 'medium'}
-                                                onChange={(e) => updateSectionSettings(section.id, 'paddingTop', e.target.value)}
-                                                className="w-full border border-gray-300 p-2 rounded-md text-sm bg-white"
-                                            >
-                                                <option value="none">None</option>
-                                                <option value="small">Small</option>
-                                                <option value="medium">Medium</option>
-                                                <option value="large">Large</option>
-                                            </select>
-                                        </div>
-                                        <div className="mb-4">
-                                            <label className="block text-xs font-semibold text-gray-600 mb-1">Bottom Padding</label>
-                                            <select
-                                                value={section.settings?.paddingBottom || 'medium'}
-                                                onChange={(e) => updateSectionSettings(section.id, 'paddingBottom', e.target.value)}
-                                                className="w-full border border-gray-300 p-2 rounded-md text-sm bg-white"
-                                            >
-                                                <option value="none">None</option>
-                                                <option value="small">Small</option>
-                                                <option value="medium">Medium</option>
-                                                <option value="large">Large</option>
-                                            </select>
+                                    {/* Section Settings */}
+                                    <div className="pt-4 border-t border-gray-100 mt-6">
+                                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Layout Settings</h4>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="block text-[10px] font-bold text-gray-500 mb-1">Top Padding</label>
+                                                <select
+                                                    value={section.settings?.paddingTop || 'medium'}
+                                                    onChange={(e) => updateSectionSettings(section.id, 'paddingTop', e.target.value)}
+                                                    className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
+                                                >
+                                                    <option value="none">None</option>
+                                                    <option value="medium">Medium</option>
+                                                    <option value="large">Large</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] font-bold text-gray-500 mb-1">Bottom Padding</label>
+                                                <select
+                                                    value={section.settings?.paddingBottom || 'medium'}
+                                                    onChange={(e) => updateSectionSettings(section.id, 'paddingBottom', e.target.value)}
+                                                    className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
+                                                >
+                                                    <option value="none">None</option>
+                                                    <option value="medium">Medium</option>
+                                                    <option value="large">Large</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             );
                         })()
                     ) : (
-                        <div className="text-sm text-gray-500 text-center mt-10">
-                            Select a section to edit
+                        <div className="text-center py-10 text-gray-400 text-sm">
+                            Select a section to edit its properties
                         </div>
                     )}
                 </div>
             </div>
+
+            {/* Sortable Item Component */}
+            {/* Define this outside or at the bottom */}
         </div>
     );
 }
 
-function SortableItem(props: any) {
-    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: props.id });
+function SortableItem({ id, section, isSelected, onClick, onRemove, onToggleVisibility }: any) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({ id });
 
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
     };
 
-    const schema = SECTION_SCHEMAS[props.section.type];
+    const schema = SECTION_SCHEMAS[section.type];
     const Icon = ICON_MAP[schema?.icon] || GripHorizontal;
 
     return (
         <div
             ref={setNodeRef}
             style={style}
-            className={`
-                flex items-center gap-3 p-3 rounded-md cursor-pointer group transition-all
-                ${props.isSelected
-                    ? 'bg-gray-100 border border-gray-300 shadow-sm'
-                    : 'bg-white border border-transparent hover:bg-gray-50 hover:border-gray-200'}
-            `}
-            onClick={props.onClick}
+            className={`group relative flex items-center gap-3 p-3 bg-white border rounded-md cursor-pointer transition-all ${isSelected ? 'border-black ring-1 ring-black shadow-sm' : 'border-gray-200 hover:border-gray-300'
+                } ${section.hidden ? 'opacity-50' : ''}`}
+            onClick={onClick}
         >
-            <div className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600" {...attributes} {...listeners}>
+            <div {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600">
                 <GripVertical size={16} />
             </div>
             <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-500">
                 <Icon size={16} />
             </div>
-            <span className={`text-sm font-medium flex-1 ${props.section.hidden ? 'text-gray-400 italic line-through' : 'text-gray-700'}`}>
-                {schema?.name || props.section.type}
-            </span>
-
-            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-gray-900 truncate">{schema?.name || section.type}</div>
+                <div className="text-xs text-gray-500 truncate">
+                    {section.content.title || section.content.heading || 'Untitled Section'}
+                </div>
+            </div>
+            <div className="flex items-center gap-1">
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
-                        props.onToggleVisibility();
+                        onToggleVisibility();
                     }}
-                    className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded"
-                    title={props.section.hidden ? "Show Section" : "Hide Section"}
+                    className="p-1.5 text-gray-400 hover:text-gray-600 rounded hover:bg-gray-100"
+                    title={section.hidden ? "Show" : "Hide"}
                 >
-                    {props.section.hidden ? (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" /></svg>
-                    ) : (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-                    )}
+                    {section.hidden ? <ImageIcon size={14} className="opacity-50" /> : <Monitor size={14} />}
                 </button>
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
-                        props.onRemove();
+                        onRemove();
                     }}
-                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded"
-                    title="Remove Section"
+                    className="p-1.5 text-gray-400 hover:text-red-500 rounded hover:bg-red-50"
+                    title="Remove"
                 >
                     <Trash2 size={14} />
                 </button>
