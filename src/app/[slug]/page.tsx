@@ -2,6 +2,8 @@ import { getProducts, getPageConfig } from '@/lib/db';
 import { PageRenderer } from '@/components/builder/PageRenderer';
 import { notFound } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
     params: Promise<{ slug: string }>;
 }

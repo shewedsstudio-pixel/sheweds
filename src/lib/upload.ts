@@ -8,7 +8,8 @@ export async function uploadFile(file: File): Promise<string> {
     // Create unique filename
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const ext = path.extname(file.name);
-    const filename = file.name.replace(ext, '') + '-' + uniqueSuffix + ext;
+    const basename = file.name.replace(ext, '').replace(/[^a-z0-9]/gi, '-').toLowerCase();
+    const filename = basename + '-' + uniqueSuffix + ext;
 
     const uploadDir = path.join(process.cwd(), 'public', 'uploads');
 

@@ -12,7 +12,9 @@ export async function fetchPageConfig(slug: string) {
 }
 
 export async function updatePageConfig(slug: string, config: PageConfig) {
+    console.log('updatePageConfig called for slug:', slug);
     await savePageConfig(slug, config);
+    console.log('Page config saved');
     revalidatePath('/');
     revalidatePath(`/${slug}`);
     return { success: true };

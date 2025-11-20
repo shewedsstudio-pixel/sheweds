@@ -68,7 +68,8 @@
           "description": "Handpicked favorites for your special day",
           "layout": "carousel",
           "productCardStyle": "standard",
-          "showPrice": ""
+          "showPrice": "",
+          "showAddToCart": ""
         },
         "settings": {
           "paddingTop": "none",

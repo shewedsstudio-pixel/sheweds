@@ -17,14 +17,18 @@ export async function fetchRelatedProducts(category: string, currentId: string) 
 }
 
 export async function createProduct(formData: FormData) {
+    console.log('createProduct called');
     const images: string[] = [];
     const videos: string[] = [];
 
     // Handle Images
     const imageFiles = formData.getAll('images') as File[];
+    console.log('Image files received:', imageFiles.length);
     for (const file of imageFiles) {
+        console.log('Processing image:', file.name, file.size);
         if (file.size > 0) {
             const path = await uploadFile(file);
+            console.log('Image uploaded:', path);
             images.push(path);
         }
     }

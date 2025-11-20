@@ -1,6 +1,8 @@
-import { getProducts, getPageConfig } from '@/lib/db';
+import { getProducts, getPageConfig, getHomePageData } from '@/lib/db';
 import { getHeroSlides } from '@/lib/hero';
 import { PageRenderer } from '@/components/builder/PageRenderer';
+
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const products = await getProducts();
