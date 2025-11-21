@@ -11,9 +11,21 @@ import { cn } from '@/components/ui/Button';
 
 interface HeroProps {
     slides?: HeroSlide[];
+    mobileHeight?: string;
+    desktopHeight?: string;
+    spacingTop?: string;
+    spacingBottom?: string;
+    layoutMode?: string;
 }
 
-export const Hero = ({ slides = [] }: HeroProps) => {
+export const Hero = ({
+    slides = [],
+    mobileHeight = '85vh',
+    desktopHeight = '85vh',
+    spacingTop = '0',
+    spacingBottom = '0',
+    layoutMode = 'full-width'
+}: HeroProps) => {
     const [currentSlide, setCurrentSlide] = useState(0);
 
     // Debug logging
@@ -47,7 +59,26 @@ export const Hero = ({ slides = [] }: HeroProps) => {
     const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
 
     return (
-        <section className="relative h-[85vh] w-full overflow-hidden bg-[#FEF8E6]">
+        <section
+            className="relative w-full overflow-hidden bg-[#FEF8E6]"
+            style={{
+                height: `var(--hero-height, ${desktopHeight})`,
+                paddingTop: spacingTop,
+                paddingBottom: spacingBottom
+            }}
+        >
+            <style jsx>{`
+                @media (max-width: 768px) {
+                    section {
+                        height: ${mobileHeight} !important;
+                    }
+                }
+                @media (min-width: 769px) {
+                    section {
+                        height: ${desktopHeight} !important;
+                    }
+                }
+            `}</style>
             <AnimatePresence mode="wait">
                 {heroSlides.map((slide, index) => (
                     index === currentSlide && (

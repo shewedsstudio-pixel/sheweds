@@ -1,21 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { uploadFile } from '@/lib/upload';
+import { writeFile, mkdir } from 'fs/promises';
+import path from 'path';
 
 export async function POST(request: NextRequest) {
     try {
-        console.log('Upload API called');
         const formData = await request.formData();
         const file = formData.get('file') as File;
 
         if (!file) {
-            console.error('No file found in formData');
-            return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+            return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
         }
 
-        console.log('File received:', file.name, file.size, file.type);
-        const path = await uploadFile(file);
-        console.log('File uploaded to:', path);
-        return NextResponse.json({ path, success: true });
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+
+        // Ensure uploads directory exists
+        const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+        try {
+            await mkdir(uploadDir, { recursive: true });
+        } catch (e) {
+            // Ignore if exists
+        }
+
+        // Create unique filename
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const filename = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+        const finalFilename = `${uniqueSuffix}-${filename}`;
+        const filepath = path.join(uploadDir, finalFilename);
+
+        await writeFile(filepath, buffer);
+
+        return NextResponse.json({
+            url: `/uploads/${finalFilename}`,
+            success: true
+        });
     } catch (error) {
         console.error('Upload error:', error);
         return NextResponse.json({ error: 'Upload failed' }, { status: 500 });

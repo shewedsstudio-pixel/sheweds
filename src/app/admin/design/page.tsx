@@ -7,15 +7,16 @@ import { Button } from '@/components/ui/Button';
 import {
     Plus, Trash2, GripVertical, Save, Monitor, Smartphone,
     GalleryHorizontal, Image as ImageIcon, LayoutGrid, Type,
-    Info, Heart, MessageSquareQuote, GripHorizontal
+    Info, Heart, MessageSquareQuote, GripHorizontal, X,
+    Download, Upload, Layout
 } from 'lucide-react';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { createPage, fetchAllPages, fetchPageConfig, updatePageConfig } from '@/app/actions/design-actions';
-
 import { exportData, importData } from '@/app/actions/backup-actions';
-import { Download, Upload } from 'lucide-react';
+import { UNIVERSAL_STYLE_SCHEMA } from '@/lib/lethal-schema';
+import { LethalFieldRenderer } from '@/components/admin/LethalFieldRenderer';
 
 // Map icon names to components
 const ICON_MAP: Record<string, any> = {
@@ -83,6 +84,7 @@ export default function DesignEditor() {
     const [currentPage, setCurrentPage] = useState<PageConfig | null>(null);
     const [selectedSectionId, setSelectedSectionId] = useState<string | null>(null);
     const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
+    const [activeTab, setActiveTab] = useState<'content' | 'style'>('content');
     const [loading, setLoading] = useState(true);
     const [isCreatingPage, setIsCreatingPage] = useState(false);
     const [newPageName, setNewPageName] = useState('');
@@ -97,6 +99,16 @@ export default function DesignEditor() {
             loadPageConfig(selectedPageId);
         }
     }, [selectedPageId]);
+
+    useEffect(() => {
+        const handleMessage = (event: MessageEvent) => {
+            if (event.data.type === 'SELECT_SECTION') {
+                setSelectedSectionId(event.data.payload.id);
+            }
+        };
+        window.addEventListener('message', handleMessage);
+        return () => window.removeEventListener('message', handleMessage);
+    }, []);
 
     const loadPages = async () => {
         const p = await fetchAllPages();
@@ -395,411 +407,112 @@ export default function DesignEditor() {
             </div>
 
             {/* Right: Properties */}
-            <div className={`w-80 bg-white border-l border-gray-200 overflow-y-auto transition-transform duration-300 ${selectedSectionId ? 'translate-x-0' : 'translate-x-full'} absolute right-0 h-full shadow-xl z-20`}>
-                <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
-                    <h3 className="font-bold text-sm text-gray-900">
-                        {selectedSectionId ? SECTION_SCHEMAS[currentPage?.sections.find(s => s.id === selectedSectionId)?.type || '']?.name : 'Properties'}
-                    </h3>
-                    <button onClick={() => setSelectedSectionId(null)} className="text-gray-400 hover:text-gray-600">
-                        &times;
-                    </button>
-                </div>
+            {/* Right: Properties */}
+            <div className="w-80 bg-white border-l border-gray-200 overflow-y-auto absolute right-0 h-full shadow-xl z-20">
+                {selectedSectionId && currentPage ? (() => {
+                    const section = currentPage.sections.find(s => s.id === selectedSectionId);
+                    if (!section) return null;
+                    const schema = SECTION_SCHEMAS[section.type];
 
-                <div className="p-4">
-                    {selectedSectionId && currentPage ? (
-                        (() => {
-                            const section = currentPage.sections.find(s => s.id === selectedSectionId);
-                            if (!section) return null;
-                            const schema = SECTION_SCHEMAS[section.type];
+                    return (
+                        <div className="flex flex-col h-full">
+                            <div className="p-4 border-b border-gray-100 bg-white sticky top-0 z-10">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="font-bold text-sm text-gray-900">
+                                        {schema?.name || 'Properties'}
+                                    </h3>
+                                    <button onClick={() => setSelectedSectionId(null)} className="text-gray-400 hover:text-gray-600">
+                                        <X size={16} />
+                                    </button>
+                                </div>
 
-                            return (
-                                <div className="space-y-6">
-                                    {schema.fields.map((field: any) => (
-                                        <div key={field.name} className="space-y-1.5">
-                                            <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide">{field.label}</label>
+                                {/* Tabs */}
+                                <div className="flex p-1 bg-gray-100 rounded-lg">
+                                    <button
+                                        onClick={() => setActiveTab('content')}
+                                        className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${activeTab === 'content' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                                    >
+                                        Content
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab('style')}
+                                        className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-all ${activeTab === 'style' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                                    >
+                                        Style
+                                    </button>
+                                </div>
+                            </div>
 
-                                            {field.type === 'text' && (
-                                                <input
-                                                    value={section.content[field.name] || ''}
-                                                    onChange={(e) => updateSection(section.id, field.name, e.target.value)}
-                                                    className="w-full border border-gray-300 p-2 rounded-md text-sm focus:ring-1 focus:ring-black focus:border-black outline-none transition-all"
-                                                />
-                                            )}
-
-                                            {field.type === 'textarea' && (
-                                                <textarea
-                                                    value={section.content[field.name] || ''}
-                                                    onChange={(e) => updateSection(section.id, field.name, e.target.value)}
-                                                    className="w-full border border-gray-300 p-2 rounded-md text-sm h-24 focus:ring-1 focus:ring-black focus:border-black outline-none transition-all resize-none"
-                                                />
-                                            )}
-
-                                            {field.type === 'select' && (
-                                                <div className="relative">
-                                                    <select
-                                                        value={section.content[field.name] || ''}
-                                                        onChange={(e) => updateSection(section.id, field.name, e.target.value)}
-                                                        className="w-full border border-gray-300 p-2 rounded-md text-sm appearance-none focus:ring-1 focus:ring-black focus:border-black outline-none bg-white"
-                                                    >
-                                                        <option value="">Select...</option>
-                                                        {field.options.map((opt: string) => (
-                                                            <option key={opt} value={opt}>{opt}</option>
-                                                        ))}
-                                                    </select>
-                                                    <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-                                                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {field.type === 'image' && (
-                                                <div className="space-y-2">
-                                                    <div className="flex gap-2">
-                                                        <input
-                                                            value={section.content[field.name] || ''}
-                                                            onChange={(e) => updateSection(section.id, field.name, e.target.value)}
-                                                            className="flex-1 border border-gray-300 p-2 rounded-md text-sm focus:ring-1 focus:ring-black focus:border-black outline-none transition-all"
-                                                            placeholder="https://..."
+                            <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                                {activeTab === 'content' ? (
+                                    /* Content Tab */
+                                    <div className="space-y-4">
+                                        {schema?.fields.map((field: any) => (
+                                            <LethalFieldRenderer
+                                                key={field.name}
+                                                field={field}
+                                                value={section.content[field.name]}
+                                                onChange={(value) => updateSection(section.id, field.name, value)}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    /* Style Tab */
+                                    <div className="space-y-6">
+                                        {UNIVERSAL_STYLE_SCHEMA.map((category: any) => (
+                                            <div key={category.group} className="space-y-3">
+                                                <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider border-b border-gray-100 pb-2">
+                                                    {category.group}
+                                                </h4>
+                                                <div className="space-y-4">
+                                                    {category.fields.map((field: any) => (
+                                                        <LethalFieldRenderer
+                                                            key={field.name}
+                                                            field={field}
+                                                            value={section.settings?.[field.name]}
+                                                            onChange={(value) => updateSectionSettings(section.id, field.name, value)}
                                                         />
-                                                        <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-md transition-colors flex items-center justify-center border border-gray-200">
-                                                            <ImageIcon size={18} />
-                                                            <input
-                                                                type="file"
-                                                                className="hidden"
-                                                                accept="image/*"
-                                                                onChange={async (e) => {
-                                                                    const file = e.target.files?.[0];
-                                                                    if (!file) return;
-
-                                                                    const formData = new FormData();
-                                                                    formData.append('file', file);
-
-                                                                    try {
-                                                                        const res = await fetch('/api/upload', { method: 'POST', body: formData });
-                                                                        const data = await res.json();
-                                                                        if (data.success) {
-                                                                            updateSection(section.id, field.name, data.path);
-                                                                        } else {
-                                                                            alert('Upload failed');
-                                                                        }
-                                                                    } catch (err) {
-                                                                        console.error(err);
-                                                                        alert('Upload error');
-                                                                    }
-                                                                }}
-                                                            />
-                                                        </label>
-                                                    </div>
-                                                    {section.content[field.name] && (
-                                                        <div className="relative w-full h-32 bg-gray-100 rounded-md overflow-hidden border border-gray-200">
-                                                            <img src={section.content[field.name]} alt="Preview" className="w-full h-full object-cover" />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
-
-                                            {field.type === 'typography' && (
-                                                <div className="p-3 bg-gray-50 border border-gray-200 rounded-md space-y-3">
-                                                    <div className="grid grid-cols-2 gap-2">
-                                                        <div>
-                                                            <label className="block text-[10px] font-bold text-gray-500 mb-1">Size</label>
-                                                            <select
-                                                                value={section.content[field.name]?.size || 'text-base'}
-                                                                onChange={(e) => updateSection(section.id, field.name, { ...section.content[field.name], size: e.target.value })}
-                                                                className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
-                                                            >
-                                                                <option value="text-xs">XS</option>
-                                                                <option value="text-sm">Small</option>
-                                                                <option value="text-base">Base</option>
-                                                                <option value="text-lg">Large</option>
-                                                                <option value="text-xl">XL</option>
-                                                                <option value="text-2xl">2XL</option>
-                                                                <option value="text-3xl">3XL</option>
-                                                                <option value="text-4xl">4XL</option>
-                                                                <option value="text-5xl">5XL</option>
-                                                            </select>
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-[10px] font-bold text-gray-500 mb-1">Weight</label>
-                                                            <select
-                                                                value={section.content[field.name]?.weight || 'font-normal'}
-                                                                onChange={(e) => updateSection(section.id, field.name, { ...section.content[field.name], weight: e.target.value })}
-                                                                className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
-                                                            >
-                                                                <option value="font-light">Light</option>
-                                                                <option value="font-normal">Normal</option>
-                                                                <option value="font-medium">Medium</option>
-                                                                <option value="font-semibold">Semibold</option>
-                                                                <option value="font-bold">Bold</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div className="grid grid-cols-2 gap-2">
-                                                        <div>
-                                                            <label className="block text-[10px] font-bold text-gray-500 mb-1">Align</label>
-                                                            <select
-                                                                value={section.content[field.name]?.align || 'text-left'}
-                                                                onChange={(e) => updateSection(section.id, field.name, { ...section.content[field.name], align: e.target.value })}
-                                                                className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
-                                                            >
-                                                                <option value="text-left">Left</option>
-                                                                <option value="text-center">Center</option>
-                                                                <option value="text-right">Right</option>
-                                                            </select>
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-[10px] font-bold text-gray-500 mb-1">Color</label>
-                                                            <input
-                                                                type="color"
-                                                                value={section.content[field.name]?.color || '#000000'}
-                                                                onChange={(e) => updateSection(section.id, field.name, { ...section.content[field.name], color: e.target.value })}
-                                                                className="w-full h-8 p-0 border-0 rounded cursor-pointer"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {field.type === 'array' && (
-                                                <div className="space-y-3">
-                                                    {(section.content[field.name] || []).map((item: any, index: number) => (
-                                                        <div key={index} className="p-3 border border-gray-200 rounded-lg bg-gray-50 relative group hover:border-gray-300 transition-colors">
-                                                            <button
-                                                                onClick={() => {
-                                                                    const newArray = [...(section.content[field.name] || [])];
-                                                                    newArray.splice(index, 1);
-                                                                    updateSection(section.id, field.name, newArray);
-                                                                }}
-                                                                className="absolute top-2 right-2 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                            >
-                                                                <Trash2 size={14} />
-                                                            </button>
-                                                            <div className="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Slide {index + 1}</div>
-
-                                                            <div className="space-y-3">
-                                                                {field.itemSchema.fields.map((subField: any) => (
-                                                                    <div key={subField.name}>
-                                                                        <label className="block text-[10px] font-bold mb-1 text-gray-500">{subField.label}</label>
-                                                                        {subField.type === 'text' && (
-                                                                            <input
-                                                                                value={item[subField.name] || ''}
-                                                                                onChange={(e) => {
-                                                                                    const newArray = [...(section.content[field.name] || [])];
-                                                                                    newArray[index] = { ...newArray[index], [subField.name]: e.target.value };
-                                                                                    updateSection(section.id, field.name, newArray);
-                                                                                }}
-                                                                                className="w-full border border-gray-300 p-1.5 rounded text-xs focus:border-black outline-none"
-                                                                            />
-                                                                        )}
-                                                                        {subField.type === 'select' && (
-                                                                            <select
-                                                                                value={item[subField.name] || ''}
-                                                                                onChange={(e) => {
-                                                                                    const newArray = [...(section.content[field.name] || [])];
-                                                                                    newArray[index] = { ...newArray[index], [subField.name]: e.target.value };
-                                                                                    updateSection(section.id, field.name, newArray);
-                                                                                }}
-                                                                                className="w-full border border-gray-300 p-1.5 rounded text-xs focus:border-black outline-none"
-                                                                            >
-                                                                                {subField.options.map((opt: string) => (
-                                                                                    <option key={opt} value={opt}>{opt}</option>
-                                                                                ))}
-                                                                            </select>
-                                                                        )}
-                                                                        {subField.type === 'image' && (
-                                                                            <div className="space-y-2">
-                                                                                <div className="flex gap-2">
-                                                                                    <input
-                                                                                        value={item[subField.name] || ''}
-                                                                                        onChange={(e) => {
-                                                                                            const newArray = [...(section.content[field.name] || [])];
-                                                                                            newArray[index] = { ...newArray[index], [subField.name]: e.target.value };
-                                                                                            updateSection(section.id, field.name, newArray);
-                                                                                        }}
-                                                                                        className="flex-1 border border-gray-300 p-1.5 rounded text-xs focus:border-black outline-none"
-                                                                                        placeholder="https://..."
-                                                                                    />
-                                                                                    <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-600 p-1.5 rounded transition-colors flex items-center justify-center border border-gray-200">
-                                                                                        <ImageIcon size={14} />
-                                                                                        <input
-                                                                                            type="file"
-                                                                                            className="hidden"
-                                                                                            accept="image/*"
-                                                                                            onChange={async (e) => {
-                                                                                                const file = e.target.files?.[0];
-                                                                                                if (!file) return;
-
-                                                                                                const formData = new FormData();
-                                                                                                formData.append('file', file);
-
-                                                                                                try {
-                                                                                                    const res = await fetch('/api/upload', { method: 'POST', body: formData });
-                                                                                                    const data = await res.json();
-                                                                                                    if (data.success) {
-                                                                                                        const newArray = [...(section.content[field.name] || [])];
-                                                                                                        newArray[index] = { ...newArray[index], [subField.name]: data.path };
-                                                                                                        updateSection(section.id, field.name, newArray);
-                                                                                                    } else {
-                                                                                                        alert('Upload failed');
-                                                                                                    }
-                                                                                                } catch (err) {
-                                                                                                    console.error(err);
-                                                                                                    alert('Upload error');
-                                                                                                }
-                                                                                            }}
-                                                                                        />
-                                                                                    </label>
-                                                                                </div>
-                                                                                {item[subField.name] && (
-                                                                                    <div className="relative w-full h-20 bg-gray-100 rounded overflow-hidden border border-gray-200">
-                                                                                        <img src={item[subField.name]} alt="Preview" className="w-full h-full object-cover" />
-                                                                                    </div>
-                                                                                )}
-                                                                            </div>
-                                                                        )}
-                                                                        {subField.type === 'typography' && (
-                                                                            <div className="p-2 bg-white border border-gray-200 rounded space-y-2">
-                                                                                <div className="grid grid-cols-2 gap-2">
-                                                                                    <select
-                                                                                        value={item[subField.name]?.size || 'text-base'}
-                                                                                        onChange={(e) => {
-                                                                                            const newArray = [...(section.content[field.name] || [])];
-                                                                                            newArray[index] = {
-                                                                                                ...newArray[index],
-                                                                                                [subField.name]: { ...item[subField.name], size: e.target.value }
-                                                                                            };
-                                                                                            updateSection(section.id, field.name, newArray);
-                                                                                        }}
-                                                                                        className="w-full border border-gray-300 p-1 rounded text-[10px]"
-                                                                                    >
-                                                                                        <option value="text-xs">XS</option>
-                                                                                        <option value="text-sm">Small</option>
-                                                                                        <option value="text-base">Base</option>
-                                                                                        <option value="text-lg">Large</option>
-                                                                                        <option value="text-xl">XL</option>
-                                                                                        <option value="text-2xl">2XL</option>
-                                                                                        <option value="text-3xl">3XL</option>
-                                                                                        <option value="text-4xl">4XL</option>
-                                                                                        <option value="text-5xl">5XL</option>
-                                                                                    </select>
-                                                                                    <select
-                                                                                        value={item[subField.name]?.weight || 'font-normal'}
-                                                                                        onChange={(e) => {
-                                                                                            const newArray = [...(section.content[field.name] || [])];
-                                                                                            newArray[index] = {
-                                                                                                ...newArray[index],
-                                                                                                [subField.name]: { ...item[subField.name], weight: e.target.value }
-                                                                                            };
-                                                                                            updateSection(section.id, field.name, newArray);
-                                                                                        }}
-                                                                                        className="w-full border border-gray-300 p-1 rounded text-[10px]"
-                                                                                    >
-                                                                                        <option value="font-light">Light</option>
-                                                                                        <option value="font-normal">Normal</option>
-                                                                                        <option value="font-medium">Medium</option>
-                                                                                        <option value="font-semibold">Semibold</option>
-                                                                                        <option value="font-bold">Bold</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                                <div className="grid grid-cols-2 gap-2">
-                                                                                    <select
-                                                                                        value={item[subField.name]?.align || 'text-left'}
-                                                                                        onChange={(e) => {
-                                                                                            const newArray = [...(section.content[field.name] || [])];
-                                                                                            newArray[index] = {
-                                                                                                ...newArray[index],
-                                                                                                [subField.name]: { ...item[subField.name], align: e.target.value }
-                                                                                            };
-                                                                                            updateSection(section.id, field.name, newArray);
-                                                                                        }}
-                                                                                        className="w-full border border-gray-300 p-1 rounded text-[10px]"
-                                                                                    >
-                                                                                        <option value="text-left">Left</option>
-                                                                                        <option value="text-center">Center</option>
-                                                                                        <option value="text-right">Right</option>
-                                                                                    </select>
-                                                                                    <input
-                                                                                        type="color"
-                                                                                        value={item[subField.name]?.color || '#000000'}
-                                                                                        onChange={(e) => {
-                                                                                            const newArray = [...(section.content[field.name] || [])];
-                                                                                            newArray[index] = {
-                                                                                                ...newArray[index],
-                                                                                                [subField.name]: { ...item[subField.name], color: e.target.value }
-                                                                                            };
-                                                                                            updateSection(section.id, field.name, newArray);
-                                                                                        }}
-                                                                                        className="w-full h-6 p-0 border-0 rounded cursor-pointer"
-                                                                                    />
-                                                                                </div>
-                                                                            </div>
-                                                                        )}
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        </div>
                                                     ))}
-                                                    <Button
-                                                        size="sm"
-                                                        variant="outline"
-                                                        className="w-full text-xs border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-600"
-                                                        onClick={() => {
-                                                            const newArray = [...(section.content[field.name] || [])];
-                                                            newArray.push({ id: Date.now().toString() });
-                                                            updateSection(section.id, field.name, newArray);
-                                                        }}
-                                                    >
-                                                        <Plus size={14} className="mr-1" /> Add Item
-                                                    </Button>
                                                 </div>
-                                            )}
-                                        </div>
-                                    ))}
-
-                                    {/* Section Settings */}
-                                    <div className="pt-4 border-t border-gray-100 mt-6">
-                                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Layout Settings</h4>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <label className="block text-[10px] font-bold text-gray-500 mb-1">Top Padding</label>
-                                                <select
-                                                    value={section.settings?.paddingTop || 'medium'}
-                                                    onChange={(e) => updateSectionSettings(section.id, 'paddingTop', e.target.value)}
-                                                    className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
-                                                >
-                                                    <option value="none">None</option>
-                                                    <option value="medium">Medium</option>
-                                                    <option value="large">Large</option>
-                                                </select>
                                             </div>
-                                            <div>
-                                                <label className="block text-[10px] font-bold text-gray-500 mb-1">Bottom Padding</label>
-                                                <select
-                                                    value={section.settings?.paddingBottom || 'medium'}
-                                                    onChange={(e) => updateSectionSettings(section.id, 'paddingBottom', e.target.value)}
-                                                    className="w-full border border-gray-300 p-1.5 rounded text-xs bg-white"
-                                                >
-                                                    <option value="none">None</option>
-                                                    <option value="medium">Medium</option>
-                                                    <option value="large">Large</option>
-                                                </select>
-                                            </div>
-                                        </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    );
+                })() : (
+                    <div className="flex flex-col h-full">
+                        <div className="p-4 border-b border-gray-100 bg-white sticky top-0 z-10">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Layout size={16} className="text-gray-400" />
+                                <h3 className="font-bold text-sm text-gray-900">Global Design System</h3>
+                            </div>
+                            <p className="text-xs text-gray-500">Browsing all available customization options.</p>
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                            {UNIVERSAL_STYLE_SCHEMA.map((category: any) => (
+                                <div key={category.group} className="space-y-3">
+                                    <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider border-b border-gray-100 pb-2">
+                                        {category.group}
+                                    </h4>
+                                    <div className="space-y-4">
+                                        {category.fields.map((field: any) => (
+                                            <LethalFieldRenderer
+                                                key={field.name}
+                                                field={field}
+                                                value={null} // Read-only / Demo mode
+                                                onChange={(value) => console.log(`Global setting ${field.name} changed to:`, value)}
+                                            />
+                                        ))}
                                     </div>
                                 </div>
-                            );
-                        })()
-                    ) : (
-                        <div className="text-center py-10 text-gray-400 text-sm">
-                            Select a section to edit its properties
+                            ))}
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
-
-            {/* Sortable Item Component */}
-            {/* Define this outside or at the bottom */}
-        </div>
+        </div >
     );
 }
 

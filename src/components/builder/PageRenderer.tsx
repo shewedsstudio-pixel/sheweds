@@ -4,6 +4,7 @@ import { Section } from '@/lib/db';
 import { SECTION_REGISTRY } from '@/components/sections/registry';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { LethalWrapper } from '@/components/builder/LethalWrapper';
 
 interface PageRendererProps {
     sections: Section[];
@@ -61,16 +62,14 @@ export const PageRenderer = ({ sections: initialSections, products = [], heroSli
                 const paddingBottom = settings.paddingBottom === 'none' ? 'pb-0' : settings.paddingBottom === 'large' ? 'pb-24' : 'pb-12';
 
                 return (
-                    <motion.div
+                    <LethalWrapper
                         key={section.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
+                        id={section.id}
+                        settings={section.settings}
                         className={`${paddingTop} ${paddingBottom}`}
                     >
                         <Component {...props} />
-                    </motion.div>
+                    </LethalWrapper>
                 );
             })}
         </div>

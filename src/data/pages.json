@@ -5,24 +5,50 @@
     "name": "Home Page",
     "sections": [
       {
-        "id": "hero-1",
-        "type": "Hero",
+        "id": "cinematichero-1763717438712",
+        "type": "CinematicHero",
         "content": {
-          "slides": [
-            {
-              "id": "1",
-              "type": "image",
-              "url": "/uploads/upscalemedia-transformed-1763657412467-336771175.png",
-              "title": "Mohey Rang Do\nBurnt Caramel",
-              "subtitle": "Because beige is never just beige",
-              "ctaText": "DISCOVER 250+ SHADES",
-              "ctaLink": "/shop"
-            }
-          ]
+          "videoUrl": "/uploads/1763717472710-545961128-Untitled_design__1_.mp4",
+          "spacingBottom": "",
+          "spacingTop": "",
+          "title": "",
+          "subtitle": "",
+          "layoutMode": "",
+          "mobileHeight": "80vh"
         },
         "settings": {
-          "paddingTop": "none",
-          "paddingBottom": "none"
+          "paddingTop": "medium",
+          "paddingBottom": "medium"
+        }
+      },
+      {
+        "id": "bentogrid-1763717188175",
+        "type": "BentoGrid",
+        "content": {
+          "items": [
+            {
+              "title": "WEDDING COLLECTION",
+              "subtitle": "",
+              "image": "/uploads/1763717217615-761373886-Gemini_Generated_Image_xgt7iexgt7iexgt7__1_.png",
+              "focalPoint": "top",
+              "link": "",
+              "size": "small"
+            },
+            {
+              "title": "BRIDAL COLLECTION",
+              "subtitle": "",
+              "image": "/uploads/1763717540795-300736072-WhatsApp_Image_2025_11_08_at_15.29.55_2be929a5.jpg",
+              "focalPoint": "top",
+              "link": "",
+              "size": ""
+            }
+          ],
+          "columns": "4",
+          "mobileColumns": "2"
+        },
+        "settings": {
+          "paddingTop": "medium",
+          "paddingBottom": "medium"
         }
       },
       {
@@ -115,6 +141,28 @@
           ]
         },
         "settings": {}
+      },
+      {
+        "id": "hero-1",
+        "type": "Hero",
+        "content": {
+          "slides": [
+            {
+              "id": "1",
+              "type": "image",
+              "url": "/uploads/upscalemedia-transformed-1763657412467-336771175.png",
+              "title": "Mohey Rang Do\nBurnt Caramel",
+              "subtitle": "Because beige is never just beige",
+              "ctaText": "DISCOVER 250+ SHADES",
+              "ctaLink": "/shop"
+            }
+          ]
+        },
+        "settings": {
+          "paddingTop": "none",
+          "paddingBottom": "none"
+        },
+        "hidden": true
       }
     ]
   }

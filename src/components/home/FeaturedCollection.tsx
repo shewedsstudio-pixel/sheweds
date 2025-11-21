@@ -18,10 +18,15 @@ interface FeaturedCollectionProps {
     titleStyle?: TypographyConfig;
     description?: string;
     layout?: 'grid' | 'carousel';
+    columns?: string;
+    mobileColumns?: string;
     productCardStyle?: 'standard' | 'minimal';
+    cardShape?: 'square' | 'portrait' | 'landscape';
     showPrice?: boolean;
     showAddToCart?: boolean;
     itemCount?: number;
+    spacingTop?: string;
+    spacingBottom?: string;
 }
 
 export const FeaturedCollection = ({
@@ -30,10 +35,15 @@ export const FeaturedCollection = ({
     titleStyle,
     description = "Handpicked selections that define luxury and tradition. Each piece tells a story of heritage and craftsmanship.",
     layout = 'grid',
+    columns = '4',
+    mobileColumns = '1',
     productCardStyle = 'standard',
+    cardShape = 'portrait',
     showPrice = true,
     showAddToCart = true,
-    itemCount = 8
+    itemCount = 8,
+    spacingTop = '6rem',
+    spacingBottom = '6rem'
 }: FeaturedCollectionProps) => {
     const featuredProducts = products.slice(0, itemCount);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -49,7 +59,7 @@ export const FeaturedCollection = ({
     };
 
     return (
-        <section className="py-24 bg-white overflow-hidden">
+        <section className="bg-white overflow-hidden" style={{ paddingTop: spacingTop, paddingBottom: spacingBottom }}>
             <Container>
                 <div className="flex flex-col md:flex-row justify-between items-end mb-12">
                     <motion.div
@@ -112,7 +122,7 @@ export const FeaturedCollection = ({
                         ))}
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16">
+                    <div className={`grid ${mobileColumns === '2' ? 'grid-cols-2' : 'grid-cols-1'} ${columns === '2' ? 'md:grid-cols-2' : columns === '3' ? 'md:grid-cols-3' : 'md:grid-cols-4'} gap-x-8 gap-y-16`}>
                         {featuredProducts.map((product, index) => (
                             <motion.div
                                 key={product.id}
