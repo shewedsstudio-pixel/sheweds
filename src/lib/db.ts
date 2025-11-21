@@ -51,24 +51,33 @@ export interface HomePageData {
 
 export async function getProducts(): Promise<Product[]> {
     try {
+        if (process.env.NODE_ENV === 'production') {
+            const data = await import('@/data/products.json');
+            // Deep clone to avoid mutating the cached module
+            const products = JSON.parse(JSON.stringify(data.default || data));
+            return migrateProducts(products);
+        }
+
         const data = await fs.readFile(PRODUCTS_FILE, 'utf-8');
         const products = JSON.parse(data);
-
-        // Migration: Ensure all products have images and videos arrays
-        return products.map((p: any) => ({
-            ...p,
-            images: p.images || (p.image ? [p.image] : []),
-            videos: p.videos || [],
-            colors: p.colors || [],
-            material: p.material || '',
-            work: p.work || '',
-            fabric: p.fabric || '',
-            washCare: p.washCare || '',
-            sku: p.sku || `SKU-${p.id}`
-        }));
+        return migrateProducts(products);
     } catch (error) {
         return [];
     }
+}
+
+function migrateProducts(products: any[]): Product[] {
+    return products.map((p: any) => ({
+        ...p,
+        images: p.images || (p.image ? [p.image] : []),
+        videos: p.videos || [],
+        colors: p.colors || [],
+        material: p.material || '',
+        work: p.work || '',
+        fabric: p.fabric || '',
+        washCare: p.washCare || '',
+        sku: p.sku || `SKU-${p.id}`
+    }));
 }
 
 export async function getProductById(id: string): Promise<Product | undefined> {
@@ -111,8 +120,14 @@ export async function deleteProduct(id: string): Promise<void> {
 
 export async function getHomePageData(): Promise<HomePageData> {
     try {
-        const data = await fs.readFile(HOMEPAGE_FILE, 'utf-8');
-        const parsed = JSON.parse(data);
+        let parsed;
+        if (process.env.NODE_ENV === 'production') {
+            const data = await import('@/data/homepage.json');
+            parsed = JSON.parse(JSON.stringify(data.default || data));
+        } else {
+            const data = await fs.readFile(HOMEPAGE_FILE, 'utf-8');
+            parsed = JSON.parse(data);
+        }
 
         // Migration for old format if needed
         if (!parsed.heroSlides && parsed.heroVideoUrl) {
@@ -173,8 +188,14 @@ export interface PageConfig {
 
 export async function getAllPages(): Promise<PageConfig[]> {
     try {
-        const data = await fs.readFile(PAGES_FILE, 'utf-8');
-        const pages = JSON.parse(data);
+        let pages;
+        if (process.env.NODE_ENV === 'production') {
+            const data = await import('@/data/pages.json');
+            pages = data.default || data;
+        } else {
+            const data = await fs.readFile(PAGES_FILE, 'utf-8');
+            pages = JSON.parse(data);
+        }
         return Object.values(pages);
     } catch (error) {
         return [];
@@ -183,8 +204,14 @@ export async function getAllPages(): Promise<PageConfig[]> {
 
 export async function getPageConfig(slug: string): Promise<PageConfig | null> {
     try {
-        const data = await fs.readFile(PAGES_FILE, 'utf-8');
-        const pages = JSON.parse(data);
+        let pages;
+        if (process.env.NODE_ENV === 'production') {
+            const data = await import('@/data/pages.json');
+            pages = data.default || data;
+        } else {
+            const data = await fs.readFile(PAGES_FILE, 'utf-8');
+            pages = JSON.parse(data);
+        }
         return Object.values(pages).find((p: any) => p.slug === slug) as PageConfig || null;
     } catch (error) {
         return null;
