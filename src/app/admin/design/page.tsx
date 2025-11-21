@@ -459,7 +459,7 @@ export default function DesignEditor() {
                                 ) : (
                                     /* Style Tab */
                                     <div className="space-y-6">
-                                        {UNIVERSAL_STYLE_SCHEMA.map((category: any) => (
+                                        {(schema.styles || UNIVERSAL_STYLE_SCHEMA).map((category: any) => (
                                             <div key={category.group} className="space-y-3">
                                                 <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider border-b border-gray-100 pb-2">
                                                     {category.group}

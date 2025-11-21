@@ -4,33 +4,29 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
+import { TypographyConfig, getTypographyClasses, getTypographyStyles } from '@/lib/typography';
+import { cn } from '@/components/ui/Button';
 
 interface CinematicHeroProps {
     videoUrl?: string;
     title?: string;
+    titleStyle?: TypographyConfig;
     subtitle?: string;
+    subtitleStyle?: TypographyConfig;
     ctaText?: string;
     ctaLink?: string;
     overlayOpacity?: number;
-    mobileHeight?: string;
-    desktopHeight?: string;
-    spacingTop?: string;
-    spacingBottom?: string;
-    layoutMode?: string;
 }
 
 export const CinematicHero = ({
     videoUrl = 'https://videos.pexels.com/video-files/3926946/3926946-uhd_2560_1440_25fps.mp4',
     title = 'ELEGANCE\nREDEFINED',
+    titleStyle,
     subtitle = 'Experience the future of fashion.',
+    subtitleStyle,
     ctaText = 'EXPLORE COLLECTION',
     ctaLink = '/shop',
-    overlayOpacity = 0.4,
-    mobileHeight = '70vh',
-    desktopHeight = '100vh',
-    spacingTop = '0',
-    spacingBottom = '0',
-    layoutMode = 'full-screen'
+    overlayOpacity = 0.4
 }: CinematicHeroProps) => {
     const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({
@@ -41,28 +37,13 @@ export const CinematicHero = ({
     const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
     const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20, filter: "blur(10px)" },
+        visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.8 } }
+    };
+
     return (
-        <div
-            ref={containerRef}
-            className="relative w-full overflow-hidden bg-black"
-            style={{
-                height: desktopHeight,
-                paddingTop: spacingTop,
-                paddingBottom: spacingBottom
-            }}
-        >
-            <style jsx>{`
-                @media (max-width: 768px) {
-                    div {
-                        height: ${mobileHeight} !important;
-                    }
-                }
-                @media (min-width: 769px) {
-                    div {
-                        height: ${desktopHeight} !important;
-                    }
-                }
-            `}</style>
+        <div ref={containerRef} className="relative w-full overflow-hidden">
             {/* Parallax Video Background */}
             <motion.div style={{ y }} className="absolute inset-0 w-full h-full">
                 <video
@@ -84,30 +65,33 @@ export const CinematicHero = ({
             <motion.div
                 style={{ opacity }}
                 className="relative z-10 h-full flex flex-col items-center justify-center text-center text-white px-4"
+                variants={{
+                    visible: { transition: { staggerChildren: 0.2 } }
+                }}
             >
                 <motion.h1
-                    initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
-                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                    transition={{ duration: 1.2, ease: "easeOut" }}
-                    className="text-6xl md:text-9xl font-bold tracking-tighter mb-6 whitespace-pre-line bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60"
+                    variants={itemVariants}
+                    className={cn(
+                        "text-6xl md:text-9xl font-bold tracking-tighter mb-6 whitespace-pre-line bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60",
+                        getTypographyClasses(titleStyle)
+                    )}
+                    style={getTypographyStyles(titleStyle)}
                 >
                     {title}
                 </motion.h1>
 
                 <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.5 }}
-                    className="text-xl md:text-2xl font-light tracking-widest mb-10 text-white/80"
+                    variants={itemVariants}
+                    className={cn(
+                        "text-xl md:text-2xl font-light tracking-widest mb-10 text-white/80",
+                        getTypographyClasses(subtitleStyle)
+                    )}
+                    style={getTypographyStyles(subtitleStyle)}
                 >
                     {subtitle}
                 </motion.p>
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.8 }}
-                >
+                <motion.div variants={itemVariants}>
                     <Link href={ctaLink}>
                         <Button
                             size="lg"

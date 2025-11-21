@@ -18,15 +18,11 @@ interface FeaturedCollectionProps {
     titleStyle?: TypographyConfig;
     description?: string;
     layout?: 'grid' | 'carousel';
-    columns?: string;
-    mobileColumns?: string;
     productCardStyle?: 'standard' | 'minimal';
-    cardShape?: 'square' | 'portrait' | 'landscape';
     showPrice?: boolean;
     showAddToCart?: boolean;
-    itemCount?: number;
-    spacingTop?: string;
-    spacingBottom?: string;
+    itemCount?: number | string;
+    styleSettings?: any;
 }
 
 export const FeaturedCollection = ({
@@ -35,17 +31,14 @@ export const FeaturedCollection = ({
     titleStyle,
     description = "Handpicked selections that define luxury and tradition. Each piece tells a story of heritage and craftsmanship.",
     layout = 'grid',
-    columns = '4',
-    mobileColumns = '1',
     productCardStyle = 'standard',
-    cardShape = 'portrait',
     showPrice = true,
     showAddToCart = true,
     itemCount = 8,
-    spacingTop = '6rem',
-    spacingBottom = '6rem'
+    styleSettings
 }: FeaturedCollectionProps) => {
-    const featuredProducts = products.slice(0, itemCount);
+    const count = typeof itemCount === 'string' ? parseInt(itemCount) : itemCount;
+    const featuredProducts = products.slice(0, count);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     const scroll = (direction: 'left' | 'right') => {
@@ -58,15 +51,32 @@ export const FeaturedCollection = ({
         }
     };
 
+    // Get border radius class
+    const getBorderRadius = () => {
+        const radius = styleSettings?.borderRadius;
+        switch (radius) {
+            case 'none': return 'rounded-none';
+            case 'small': return 'rounded-md';
+            case 'medium': return 'rounded-xl';
+            case 'large': return 'rounded-3xl';
+            case 'full': return 'rounded-full';
+            default: return 'rounded-none';
+        }
+    };
+
+    const radiusClass = getBorderRadius();
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+    };
+
     return (
-        <section className="bg-white overflow-hidden" style={{ paddingTop: spacingTop, paddingBottom: spacingBottom }}>
+        <section className="overflow-hidden h-full w-full">
             <Container>
                 <div className="flex flex-col md:flex-row justify-between items-end mb-12">
                     <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
+                        variants={itemVariants}
                         className="max-w-2xl"
                     >
                         <h2
@@ -103,38 +113,41 @@ export const FeaturedCollection = ({
                 </div>
 
                 {layout === 'carousel' ? (
-                    <div
+                    <motion.div
                         ref={scrollContainerRef}
                         className="flex gap-8 overflow-x-auto pb-12 snap-x snap-mandatory scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0"
                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                        variants={{
+                            visible: { transition: { staggerChildren: 0.1 } }
+                        }}
                     >
                         {featuredProducts.map((product, index) => (
                             <motion.div
                                 key={product.id}
-                                initial={{ opacity: 0, x: 50 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.6, delay: index * 0.1 }}
-                                className="min-w-[280px] md:min-w-[350px] snap-start"
+                                variants={itemVariants}
+                                className={`min-w-[280px] md:min-w-[350px] snap-start overflow-hidden ${radiusClass}`}
                             >
                                 <ProductCard product={product} />
                             </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 ) : (
-                    <div className={`grid ${mobileColumns === '2' ? 'grid-cols-2' : 'grid-cols-1'} ${columns === '2' ? 'md:grid-cols-2' : columns === '3' ? 'md:grid-cols-3' : 'md:grid-cols-4'} gap-x-8 gap-y-16`}>
+                    <motion.div
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16"
+                        variants={{
+                            visible: { transition: { staggerChildren: 0.1 } }
+                        }}
+                    >
                         {featuredProducts.map((product, index) => (
                             <motion.div
                                 key={product.id}
-                                initial={{ opacity: 0, y: 50 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.8, delay: index * 0.1 }}
+                                variants={itemVariants}
+                                className={`overflow-hidden ${radiusClass}`}
                             >
                                 <ProductCard product={product} />
                             </motion.div>
                         ))}
-                    </div>
+                    </motion.div>
                 )}
 
                 <div className="mt-8 text-center md:hidden">

@@ -21,10 +21,6 @@ interface BridalJourneyProps {
     subtitleStyle?: TypographyConfig;
     items?: JourneyItem[];
     cardHeight?: 'small' | 'medium' | 'large';
-    columns?: string;
-    mobileColumns?: string;
-    spacingTop?: string;
-    spacingBottom?: string;
 }
 
 const DEFAULT_ITEMS = [
@@ -56,11 +52,7 @@ export const BridalJourney = ({
     subtitle = "BRIDAL JOURNEY",
     subtitleStyle,
     items = DEFAULT_ITEMS,
-    cardHeight = 'medium',
-    columns = '4',
-    mobileColumns = '2',
-    spacingTop = '0.5rem',
-    spacingBottom = '1rem'
+    cardHeight = 'medium'
 }: BridalJourneyProps) => {
     // Map height settings to classes
     const heightClasses = {
@@ -72,7 +64,7 @@ export const BridalJourney = ({
     const currentHeightClass = heightClasses[cardHeight] || heightClasses.medium;
 
     return (
-        <section className="bg-[#FEF8E6]" style={{ paddingTop: spacingTop, paddingBottom: spacingBottom }}>
+        <section className="py-2 md:py-4 bg-[#FEF8E6]">
             <Container>
                 <div className="text-center mb-4 md:mb-6">
                     <h2
@@ -89,7 +81,7 @@ export const BridalJourney = ({
                     </h2>
                 </div>
 
-                <div className={`grid ${mobileColumns === '1' ? 'grid-cols-1' : 'grid-cols-2'} ${columns === '2' ? 'md:grid-cols-2' : columns === '3' ? 'md:grid-cols-3' : 'md:grid-cols-4'} gap-4 md:gap-6`}>
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                     {items.map((item, index) => (
                         <div key={index} className="relative group cursor-pointer">
                             {/* Arched Image Container */}

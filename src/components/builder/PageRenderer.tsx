@@ -54,6 +54,8 @@ export const PageRenderer = ({ sections: initialSections, products = [], heroSli
                     slides: section.type === 'Hero'
                         ? (section.content.slides && section.content.slides.length > 0 ? section.content.slides : heroSlides)
                         : undefined,
+                    // Pass style settings to the component for internal use (e.g., border radius on items)
+                    styleSettings: section.settings,
                 };
 
                 // Wrapper for animations and settings

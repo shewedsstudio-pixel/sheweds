@@ -40,15 +40,17 @@
               "image": "/uploads/1763717540795-300736072-WhatsApp_Image_2025_11_08_at_15.29.55_2be929a5.jpg",
               "focalPoint": "top",
               "link": "",
-              "size": ""
+              "size": "small"
             }
           ],
           "columns": "4",
-          "mobileColumns": "2"
+          "mobileColumns": "2",
+          "mobileGridCols": "2"
         },
         "settings": {
           "paddingTop": "medium",
-          "paddingBottom": "medium"
+          "paddingBottom": "medium",
+          "gap": "large"
         }
       },
       {
@@ -84,7 +86,10 @@
             "size": "text-base"
           }
         },
-        "settings": {}
+        "settings": {
+          "animationName": "",
+          "hoverEffect": ""
+        }
       },
       {
         "id": "featured-1",
@@ -95,11 +100,16 @@
           "layout": "carousel",
           "productCardStyle": "standard",
           "showPrice": "",
-          "showAddToCart": ""
+          "showAddToCart": "",
+          "titleStyle": {
+            "align": "text-center",
+            "size": "text-4xl"
+          }
         },
         "settings": {
           "paddingTop": "none",
-          "paddingBottom": "none"
+          "paddingBottom": "none",
+          "borderRadius": ""
         }
       },
       {

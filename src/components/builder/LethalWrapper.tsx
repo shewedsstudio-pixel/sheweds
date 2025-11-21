@@ -23,6 +23,10 @@ export const LethalWrapper = ({ children, settings = {}, className = '', id }: L
         alignItems: settings.alignItems,
         gap: settings.gap ? `${settings.gap}px` : undefined,
 
+        // Dimensions
+        height: settings.height === 'screen' ? '100vh' : settings.height === 'large' ? '800px' : settings.height === 'medium' ? '500px' : settings.height,
+        width: settings.width,
+
         // Typography
         color: settings.textColor,
         textAlign: settings.textAlign,
@@ -47,21 +51,29 @@ export const LethalWrapper = ({ children, settings = {}, className = '', id }: L
         ].filter(Boolean).join(' ') || undefined,
     };
 
-    // Handle Spacing (Padding)
+    // Handle Spacing (Padding) - Support both object and individual keys
     if (settings.padding) {
         style.paddingTop = settings.padding.top;
         style.paddingRight = settings.padding.right;
         style.paddingBottom = settings.padding.bottom;
         style.paddingLeft = settings.padding.left;
     }
+    if (settings.paddingTop) style.paddingTop = settings.paddingTop;
+    if (settings.paddingRight) style.paddingRight = settings.paddingRight;
+    if (settings.paddingBottom) style.paddingBottom = settings.paddingBottom;
+    if (settings.paddingLeft) style.paddingLeft = settings.paddingLeft;
 
-    // Handle Spacing (Margin)
+    // Handle Spacing (Margin) - Support both object and individual keys
     if (settings.margin) {
         style.marginTop = settings.margin.top;
         style.marginRight = settings.margin.right;
         style.marginBottom = settings.margin.bottom;
         style.marginLeft = settings.margin.left;
     }
+    if (settings.marginTop) style.marginTop = settings.marginTop;
+    if (settings.marginRight) style.marginRight = settings.marginRight;
+    if (settings.marginBottom) style.marginBottom = settings.marginBottom;
+    if (settings.marginLeft) style.marginLeft = settings.marginLeft;
 
     // Handle Borders
     if (settings.border) {

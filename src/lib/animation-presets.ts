@@ -5,6 +5,43 @@ export const ANIMATION_PRESETS: Record<string, Variants> = {
         hidden: { opacity: 0, y: 40 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
     },
+    'reveal-mask': {
+        hidden: { clipPath: "inset(100% 0 0 0)" },
+        visible: {
+            clipPath: "inset(0% 0 0 0)",
+            transition: { duration: 1, ease: [0.77, 0, 0.175, 1] }
+        }
+    },
+    'parallax-scale': {
+        hidden: { opacity: 0, scale: 1.2, y: 50 },
+        visible: {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            transition: { duration: 1.2, ease: "circOut" }
+        }
+    },
+    'text-stagger': {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.2,
+                duration: 0.5
+            }
+        }
+    },
+    'glass-morphism': {
+        hidden: { opacity: 0, backdropFilter: "blur(0px)", boxShadow: "0 0 0 rgba(0,0,0,0)" },
+        visible: {
+            opacity: 1,
+            backdropFilter: "blur(10px)",
+            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            transition: { duration: 0.8 }
+        }
+    },
     'cyberpunk-glitch': {
         hidden: { opacity: 0, x: -20, skewX: 10 },
         visible: {
