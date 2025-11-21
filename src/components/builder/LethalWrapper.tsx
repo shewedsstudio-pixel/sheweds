@@ -51,6 +51,18 @@ export const LethalWrapper = ({ children, settings = {}, className = '', id }: L
         ].filter(Boolean).join(' ') || undefined,
     };
 
+    // Helper to resolve spacing values (presets or direct)
+    const getSpacingValue = (value: any) => {
+        if (!value) return undefined;
+        switch (value) {
+            case 'none': return '0px';
+            case 'small': return '48px';
+            case 'medium': return '96px';
+            case 'large': return '144px';
+            default: return value;
+        }
+    };
+
     // Handle Spacing (Padding) - Support both object and individual keys
     if (settings.padding) {
         style.paddingTop = settings.padding.top;
@@ -58,10 +70,10 @@ export const LethalWrapper = ({ children, settings = {}, className = '', id }: L
         style.paddingBottom = settings.padding.bottom;
         style.paddingLeft = settings.padding.left;
     }
-    if (settings.paddingTop) style.paddingTop = settings.paddingTop;
-    if (settings.paddingRight) style.paddingRight = settings.paddingRight;
-    if (settings.paddingBottom) style.paddingBottom = settings.paddingBottom;
-    if (settings.paddingLeft) style.paddingLeft = settings.paddingLeft;
+    if (settings.paddingTop) style.paddingTop = getSpacingValue(settings.paddingTop);
+    if (settings.paddingRight) style.paddingRight = getSpacingValue(settings.paddingRight);
+    if (settings.paddingBottom) style.paddingBottom = getSpacingValue(settings.paddingBottom);
+    if (settings.paddingLeft) style.paddingLeft = getSpacingValue(settings.paddingLeft);
 
     // Handle Spacing (Margin) - Support both object and individual keys
     if (settings.margin) {
@@ -70,10 +82,10 @@ export const LethalWrapper = ({ children, settings = {}, className = '', id }: L
         style.marginBottom = settings.margin.bottom;
         style.marginLeft = settings.margin.left;
     }
-    if (settings.marginTop) style.marginTop = settings.marginTop;
-    if (settings.marginRight) style.marginRight = settings.marginRight;
-    if (settings.marginBottom) style.marginBottom = settings.marginBottom;
-    if (settings.marginLeft) style.marginLeft = settings.marginLeft;
+    if (settings.marginTop) style.marginTop = getSpacingValue(settings.marginTop);
+    if (settings.marginRight) style.marginRight = getSpacingValue(settings.marginRight);
+    if (settings.marginBottom) style.marginBottom = getSpacingValue(settings.marginBottom);
+    if (settings.marginLeft) style.marginLeft = getSpacingValue(settings.marginLeft);
 
     // Handle Borders
     if (settings.border) {

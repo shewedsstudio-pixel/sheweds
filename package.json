@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "publish-site": "git add . && git commit -m \"Update from Admin\" && git push"
+    "publish-site": "npm run build && git add . && git commit -m \"Update from Admin\" && git push"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

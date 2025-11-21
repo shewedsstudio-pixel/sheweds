@@ -35,9 +35,22 @@ export interface UniversalStyleProps {
     alignItems?: 'flex-start' | 'center' | 'flex-end' | 'stretch';
     gap?: number;
 
+    // Dimensions
+    height?: string | number;
+    width?: string | number;
+
     // Spacing
     margin?: Spacing;
+    marginTop?: string | number;
+    marginRight?: string | number;
+    marginBottom?: string | number;
+    marginLeft?: string | number;
+
     padding?: Spacing;
+    paddingTop?: string | number;
+    paddingRight?: string | number;
+    paddingBottom?: string | number;
+    paddingLeft?: string | number;
 
     // Typography (Global override for section)
     textColor?: string;

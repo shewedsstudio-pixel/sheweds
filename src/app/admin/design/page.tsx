@@ -143,27 +143,62 @@ export default function DesignEditor() {
 
     const addSection = (type: string) => {
         if (!currentPage) return;
+
+        // Default settings based on section type
+        const defaultSettings: any = {
+            paddingTop: 'medium',
+            paddingBottom: 'medium'
+        };
+
+        if (type === 'CinematicHero') {
+            defaultSettings.height = 'screen';
+        }
+
         const newSection: Section = {
             id: `${type.toLowerCase()}-${Date.now()}`,
             type,
             content: {},
-            settings: { paddingTop: 'medium', paddingBottom: 'medium' }
+            settings: defaultSettings
         };
-        setCurrentPage({
+
+        const updatedPage = {
             ...currentPage,
             sections: [...currentPage.sections, newSection]
-        });
+        };
+
+        setCurrentPage(updatedPage);
         setSelectedSectionId(newSection.id);
         setShowAddMenu(false);
+
+        // Send live update to iframe
+        const iframe = document.querySelector('iframe');
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({
+                type: 'UPDATE_PAGE_CONFIG',
+                payload: updatedPage
+            }, '*');
+        }
     };
 
     const removeSection = (id: string) => {
         if (!currentPage) return;
-        setCurrentPage({
+
+        const updatedPage = {
             ...currentPage,
             sections: currentPage.sections.filter(s => s.id !== id)
-        });
+        };
+
+        setCurrentPage(updatedPage);
         if (selectedSectionId === id) setSelectedSectionId(null);
+
+        // Send live update to iframe
+        const iframe = document.querySelector('iframe');
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({
+                type: 'UPDATE_PAGE_CONFIG',
+                payload: updatedPage
+            }, '*');
+        }
     };
 
     const updateSection = (id: string, field: string, value: any) => {

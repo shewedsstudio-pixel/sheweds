@@ -6,12 +6,14 @@ import { TestimonialSlider } from '@/components/home/TestimonialSlider';
 import { RichText } from '@/components/sections/RichText';
 import { ImageBanner } from '@/components/sections/ImageBanner';
 
+import { Header } from '@/components/sections/Header';
 import { CinematicHero } from '@/components/sections/premium/CinematicHero';
 import { BentoGrid } from '@/components/sections/premium/BentoGrid';
 import { ModernMarquee } from '@/components/sections/premium/ModernMarquee';
 
 // Registry of all available sections
 export const SECTION_REGISTRY: Record<string, any> = {
+    'Header': Header,
     'Hero': Hero,
     'FeaturedCollection': FeaturedCollection,
     'AboutSection': AboutSection,
@@ -28,6 +30,16 @@ export const SECTION_REGISTRY: Record<string, any> = {
 // Schema for Admin Editor
 // Defines what fields are editable for each section
 export const SECTION_SCHEMAS: Record<string, any> = {
+    'Header': {
+        name: 'Header / Navbar',
+        icon: 'LayoutTemplate',
+        fields: [
+            { name: 'logoAlign', type: 'select', options: ['left', 'center', 'right'], label: 'Logo Alignment' },
+            { name: 'backgroundColor', type: 'color', label: 'Background Color' },
+            { name: 'textColor', type: 'color', label: 'Text Color' },
+        ],
+        styles: []
+    },
     'CinematicHero': {
         name: 'Cinematic Hero (VFX)',
         icon: 'Film',
@@ -46,8 +58,8 @@ export const SECTION_SCHEMAS: Record<string, any> = {
                 group: 'Layout',
                 fields: [
                     { name: 'height', type: 'select', options: ['screen', 'large', 'medium'], label: 'Height' },
-                    { name: 'paddingTop', type: 'spacing', label: 'Top Padding' },
-                    { name: 'paddingBottom', type: 'spacing', label: 'Bottom Padding' },
+                    { name: 'paddingTop', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Top Padding' },
+                    { name: 'paddingBottom', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Bottom Padding' },
                 ]
             },
             {
@@ -88,8 +100,8 @@ export const SECTION_SCHEMAS: Record<string, any> = {
             {
                 group: 'Layout',
                 fields: [
-                    { name: 'paddingTop', type: 'spacing', label: 'Top Padding' },
-                    { name: 'paddingBottom', type: 'spacing', label: 'Bottom Padding' },
+                    { name: 'paddingTop', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Top Padding' },
+                    { name: 'paddingBottom', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Bottom Padding' },
                     { name: 'gap', type: 'select', options: ['small', 'medium', 'large'], label: 'Grid Gap' },
                 ]
             },
@@ -116,6 +128,15 @@ export const SECTION_SCHEMAS: Record<string, any> = {
             { name: 'direction', type: 'select', options: ['left', 'right'], label: 'Direction' },
             { name: 'backgroundColor', type: 'color', label: 'Background Color' },
             { name: 'textColor', type: 'color', label: 'Text Color' },
+        ],
+        styles: [
+            {
+                group: 'Layout',
+                fields: [
+                    { name: 'paddingTop', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Top Padding' },
+                    { name: 'paddingBottom', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Bottom Padding' },
+                ]
+            }
         ]
     },
     'Hero': {
@@ -136,6 +157,15 @@ export const SECTION_SCHEMAS: Record<string, any> = {
                     ]
                 }
             }
+        ],
+        styles: [
+            {
+                group: 'Layout',
+                fields: [
+                    { name: 'paddingTop', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Top Padding' },
+                    { name: 'paddingBottom', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Bottom Padding' },
+                ]
+            }
         ]
     },
     'ImageBanner': {
@@ -151,6 +181,15 @@ export const SECTION_SCHEMAS: Record<string, any> = {
             { name: 'ctaLink', type: 'text', label: 'Button Link' },
             { name: 'align', type: 'select', options: ['left', 'center', 'right'], label: 'Alignment' },
             { name: 'height', type: 'select', options: ['small', 'medium', 'large'], label: 'Height' },
+        ],
+        styles: [
+            {
+                group: 'Layout',
+                fields: [
+                    { name: 'paddingTop', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Top Padding' },
+                    { name: 'paddingBottom', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Bottom Padding' },
+                ]
+            }
         ]
     },
     'FeaturedCollection': {
@@ -170,8 +209,8 @@ export const SECTION_SCHEMAS: Record<string, any> = {
             {
                 group: 'Layout',
                 fields: [
-                    { name: 'paddingTop', type: 'spacing', label: 'Top Padding' },
-                    { name: 'paddingBottom', type: 'spacing', label: 'Bottom Padding' },
+                    { name: 'paddingTop', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Top Padding' },
+                    { name: 'paddingBottom', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Bottom Padding' },
                 ]
             },
             {
@@ -197,6 +236,15 @@ export const SECTION_SCHEMAS: Record<string, any> = {
             { name: 'content', type: 'textarea', label: 'Content' },
             { name: 'align', type: 'select', options: ['left', 'center', 'right'], label: 'Alignment' },
             { name: 'backgroundColor', type: 'select', options: ['white', 'cream'], label: 'Background' },
+        ],
+        styles: [
+            {
+                group: 'Layout',
+                fields: [
+                    { name: 'paddingTop', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Top Padding' },
+                    { name: 'paddingBottom', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Bottom Padding' },
+                ]
+            }
         ]
     },
     'AboutSection': {
@@ -210,6 +258,15 @@ export const SECTION_SCHEMAS: Record<string, any> = {
             { name: 'image', type: 'image', label: 'Image' },
             { name: 'buttonText', type: 'text', label: 'Button Text' },
             { name: 'buttonLink', type: 'text', label: 'Button Link' },
+        ],
+        styles: [
+            {
+                group: 'Layout',
+                fields: [
+                    { name: 'paddingTop', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Top Padding' },
+                    { name: 'paddingBottom', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Bottom Padding' },
+                ]
+            }
         ]
     },
     'BridalJourney': {
@@ -230,6 +287,15 @@ export const SECTION_SCHEMAS: Record<string, any> = {
                     ]
                 }
             }
+        ],
+        styles: [
+            {
+                group: 'Layout',
+                fields: [
+                    { name: 'paddingTop', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Top Padding' },
+                    { name: 'paddingBottom', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Bottom Padding' },
+                ]
+            }
         ]
     },
     'TestimonialSlider': {
@@ -246,6 +312,15 @@ export const SECTION_SCHEMAS: Record<string, any> = {
                         { name: 'location', type: 'text', label: 'Location' },
                     ]
                 }
+            }
+        ],
+        styles: [
+            {
+                group: 'Layout',
+                fields: [
+                    { name: 'paddingTop', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Top Padding' },
+                    { name: 'paddingBottom', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Bottom Padding' },
+                ]
             }
         ]
     }

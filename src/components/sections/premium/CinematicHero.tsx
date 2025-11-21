@@ -43,7 +43,7 @@ export const CinematicHero = ({
     };
 
     return (
-        <div ref={containerRef} className="relative w-full overflow-hidden">
+        <div ref={containerRef} className="relative w-full h-full overflow-hidden">
             {/* Parallax Video Background */}
             <motion.div style={{ y }} className="absolute inset-0 w-full h-full">
                 <video

@@ -10,7 +10,6 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
     return (
         <>
-            {!isAdmin && <Navbar />}
             <main className="flex-grow">
                 {children}
             </main>
