@@ -5,35 +5,6 @@
     "name": "Home Page",
     "sections": [
       {
-        "id": "header-auto-1",
-        "type": "Header",
-        "content": {
-          "logoAlign": "left"
-        },
-        "settings": {
-          "backgroundColor": "#FEF8E6",
-          "textColor": "#3C1E10"
-        }
-      },
-      {
-        "id": "cinematichero-1763717438712",
-        "type": "CinematicHero",
-        "content": {
-          "videoUrl": "/uploads/1763717472710-545961128-Untitled_design__1_.mp4",
-          "spacingBottom": "",
-          "spacingTop": "",
-          "title": "",
-          "subtitle": "",
-          "layoutMode": "",
-          "mobileHeight": "80vh"
-        },
-        "settings": {
-          "paddingTop": "none",
-          "paddingBottom": "none",
-          "height": "screen"
-        }
-      },
-      {
         "id": "bentogrid-1763717188175",
         "type": "BentoGrid",
         "content": {
@@ -166,6 +137,28 @@
           ]
         },
         "settings": {}
+      },
+      {
+        "id": "hero-1",
+        "type": "Hero",
+        "content": {
+          "slides": [
+            {
+              "id": "1",
+              "type": "image",
+              "url": "/uploads/upscalemedia-transformed-1763657412467-336771175.png",
+              "title": "Mohey Rang Do\nBurnt Caramel",
+              "subtitle": "Because beige is never just beige",
+              "ctaText": "DISCOVER 250+ SHADES",
+              "ctaLink": "/shop"
+            }
+          ]
+        },
+        "settings": {
+          "paddingTop": "none",
+          "paddingBottom": "none"
+        },
+        "hidden": false
       }
     ]
   }
