@@ -10,7 +10,7 @@ export default async function Home() {
   const heroSlides = await getHeroSlides();
 
   if (!pageConfig) {
-    return <div>Home page configuration not found. Please create a page with slug 'home'.</div>;
+    return <div>Home page configuration not found. Please create a page with slug 'home'. (v1.2)</div>;
   }
 
   return (

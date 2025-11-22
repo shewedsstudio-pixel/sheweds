@@ -62,7 +62,7 @@ export const Footer = () => {
                 </div>
 
                 <div className="border-t border-[#5D2E1A] mt-16 pt-8 text-center text-xs tracking-wider">
-                    <p>&copy; {new Date().getFullYear()} SHEWEDS. All Rights Reserved. v1.1</p>
+                    <p>&copy; {new Date().getFullYear()} SHEWEDS. All Rights Reserved. v1.2</p>
                 </div>
             </Container>
         </footer>
