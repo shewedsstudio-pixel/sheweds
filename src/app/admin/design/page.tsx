@@ -125,8 +125,13 @@ export default function DesignEditor() {
 
     const handleSave = async () => {
         if (!currentPage) return;
-        await updatePageConfig(currentPage.slug, currentPage);
-        alert('Saved successfully!');
+        try {
+            await updatePageConfig(currentPage.slug, currentPage);
+            alert('Saved successfully! (Remember to run "npm run publish-site" to make it live)');
+        } catch (error) {
+            console.error(error);
+            alert('Failed to save. NOTE: You cannot save changes on the Live Website. You must edit on Localhost (localhost:3000) and then publish.');
+        }
     };
 
     const handleCreatePage = async (e: React.FormEvent) => {
