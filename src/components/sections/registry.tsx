@@ -5,15 +5,11 @@ import { BridalJourney } from '@/components/home/BridalJourney';
 import { TestimonialSlider } from '@/components/home/TestimonialSlider';
 import { RichText } from '@/components/sections/RichText';
 import { ImageBanner } from '@/components/sections/ImageBanner';
-
-import { Header } from '@/components/sections/Header';
-import { CinematicHero } from '@/components/sections/premium/CinematicHero';
 import { BentoGrid } from '@/components/sections/premium/BentoGrid';
 import { ModernMarquee } from '@/components/sections/premium/ModernMarquee';
 
 // Registry of all available sections
 export const SECTION_REGISTRY: Record<string, any> = {
-    'Header': Header,
     'Hero': Hero,
     'FeaturedCollection': FeaturedCollection,
     'AboutSection': AboutSection,
@@ -21,8 +17,6 @@ export const SECTION_REGISTRY: Record<string, any> = {
     'TestimonialSlider': TestimonialSlider,
     'RichText': RichText,
     'ImageBanner': ImageBanner,
-    // Premium Sections
-    'CinematicHero': CinematicHero,
     'BentoGrid': BentoGrid,
     'ModernMarquee': ModernMarquee,
 };
@@ -30,47 +24,6 @@ export const SECTION_REGISTRY: Record<string, any> = {
 // Schema for Admin Editor
 // Defines what fields are editable for each section
 export const SECTION_SCHEMAS: Record<string, any> = {
-    'Header': {
-        name: 'Header / Navbar',
-        icon: 'LayoutTemplate',
-        fields: [
-            { name: 'logoAlign', type: 'select', options: ['left', 'center', 'right'], label: 'Logo Alignment' },
-            { name: 'backgroundColor', type: 'color', label: 'Background Color' },
-            { name: 'textColor', type: 'color', label: 'Text Color' },
-        ],
-        styles: []
-    },
-    'CinematicHero': {
-        name: 'Cinematic Hero (VFX)',
-        icon: 'Film',
-        fields: [
-            { name: 'videoUrl', type: 'image', label: 'Video Source (Upload/URL)' },
-            { name: 'title', type: 'textarea', label: 'Main Title' },
-            { name: 'titleStyle', type: 'typography', label: 'Title Style' },
-            { name: 'subtitle', type: 'text', label: 'Subtitle' },
-            { name: 'subtitleStyle', type: 'typography', label: 'Subtitle Style' },
-            { name: 'ctaText', type: 'text', label: 'Button Text' },
-            { name: 'ctaLink', type: 'text', label: 'Button Link' },
-            { name: 'overlayOpacity', type: 'slider', min: 0, max: 1, step: 0.1, label: 'Overlay Opacity' },
-        ],
-        styles: [
-            {
-                group: 'Layout',
-                fields: [
-                    { name: 'height', type: 'select', options: ['screen', 'large', 'medium'], label: 'Height' },
-                    { name: 'paddingTop', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Top Padding' },
-                    { name: 'paddingBottom', type: 'select', options: ['none', 'small', 'medium', 'large'], label: 'Bottom Padding' },
-                ]
-            },
-            {
-                group: 'Typography',
-                fields: [
-                    { name: 'textColor', type: 'color', label: 'Text Color' },
-                    { name: 'textAlign', type: 'select', options: ['left', 'center', 'right'], label: 'Alignment' },
-                ]
-            }
-        ]
-    },
     'BentoGrid': {
         name: 'Bento Grid (Premium)',
         icon: 'LayoutDashboard',
