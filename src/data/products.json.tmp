@@ -1158,6 +1158,29 @@
     "work": "handwork",
     "washCare": "any type ",
     "sku": "SKU-5",
-    "id": "1764225976282"
+    "id": "1764225976282",
+    "colors": [],
+    "fabric": ""
+  },
+  {
+    "name": "lahenga",
+    "price": 15999,
+    "category": "lehenga",
+    "image": "/uploads/gemini-generated-image-l08jsal08jsal08j-1764225976979-267288002.png",
+    "images": [
+      "/uploads/gemini-generated-image-l08jsal08jsal08j-1764225976979-267288002.png"
+    ],
+    "videos": [],
+    "description": "very nice",
+    "sizes": [
+      "XS",
+      "S",
+      "Free Size"
+    ],
+    "material": "silk",
+    "work": "handwork",
+    "washCare": "any type ",
+    "sku": "SKU-5",
+    "id": "1764225976991"
   }
 ]
