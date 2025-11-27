@@ -81,14 +81,14 @@
     "id": "4",
     "name": "Golden Tissue Saree",
     "price": 45000,
-    "category": "Saree",
+    "category": "lehenga",
     "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=2874&auto=format&fit=crop",
     "description": "Lightweight golden tissue saree with sequin borders.",
     "sizes": [
       "Free Size"
     ],
     "images": [
-      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=2874&auto=format&fit=crop"
+      "/uploads/1762469983025-1--1764224883953-89923935.jpg"
     ],
     "videos": [],
     "colors": [],
@@ -102,7 +102,7 @@
     "id": "5",
     "name": "Pastel Pink Anarkali",
     "price": 35000,
-    "category": "Anarkali",
+    "category": "lehenga",
     "image": "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?q=80&w=2834&auto=format&fit=crop",
     "description": "Soft pastel pink anarkali with floral embroidery.",
     "sizes": [
@@ -113,7 +113,7 @@
       "XL"
     ],
     "images": [
-      "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?q=80&w=2834&auto=format&fit=crop"
+      "/uploads/adcwfhnaz0nbnduio1nf-1764224980853-12470122.png"
     ],
     "videos": [],
     "colors": [],
